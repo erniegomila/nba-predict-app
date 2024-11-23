@@ -258,6 +258,7 @@ home_button = st.sidebar.button("Home")
 prediction_button = st.sidebar.button("Win/Loss Predictor")
 data_insights_button = st.sidebar.button("Data Insights")
 about_button = st.sidebar.button("About")
+test_button = st.sidebar.button("fredo test")
 
 # Set default page if no button is pressed
 if "page" not in st.session_state:
