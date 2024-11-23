@@ -352,10 +352,6 @@ if st.session_state.page == "Home":
         </style>
     """, unsafe_allow_html=True)
 
-elif st.session_state.page == "Prediction":
-    st.markdown("Prediction page content goes here")
-
-
 
 elif st.session_state.page == "Prediction":
     st.title("Make a Prediction")
