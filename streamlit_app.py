@@ -275,21 +275,86 @@ elif about_button:
 
 # Render the selected page
 if st.session_state.page == "Home":
-    st.title("NBA Predictor App")
-    st.write("Welcome to the NBA Predictor App.")
-    st.subheader("Intro to Data Science Final Project")
+
+
+
+    # Title with emoji for a vibrant look
     st.markdown("""
-**CAP 5768**<br>
-Dr. Juhàsz<br>
-Mon 5pm - 7:40pm
-""", unsafe_allow_html=True)
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52); padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);">
+            <h1 style="color: white; font-family: 'Arial', sans-serif; margin-bottom: 0;">🏀 NBA Predictor App</h1>
+            <strong style="font-size: 20px; color: white; margin-top: 5px;">Elevate your predictions, powered by data science!</strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Welcome message with improved layout
     st.markdown("""
-**Team Members:**<br>
-Ernesto Gomila<br>
-Brandon Rodriguez<br>
-Alfredo<br>
-Abel<br>
-""", unsafe_allow_html=True)
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52); padding: 15px; border-radius: 15px; text-align: center; margin-top: 20px; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: white; font-family: 'Verdana', sans-serif;">Welcome to the NBA Predictor App</h2>
+            <strong style="font-size: 18px; color: white; font-family: 'Georgia', serif;">
+                Your ultimate tool for predicting NBA outcomes, powered by data science!
+            </strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Subtitle with better spacing
+    st.markdown("""
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52);padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);margin-top: 30px; text-align: left;">
+            <h3 style="color: #333; font-family: 'Helvetica', sans-serif;">📚 Intro to Data Science Final Project</h3>
+            <Strong style="font-size: 16px; color: #444; line-height: 1.6;">
+                <b>CAP 5768</b><br>
+                <b>Instructor:</b> Dr. Juhàsz<br>
+                <b>Schedule:</b> Mondays, 5:00 PM - 7:40 PM
+            </Strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Team members with hover effect using CSS
+    st.markdown("""
+        <style>
+            .team-member-list li {
+                margin-bottom: 8px;
+                font-size: 16px;
+                color: #444;
+                transition: color 0.3s ease;
+            }
+            .team-member-list li:hover {
+                color: #0077b6;
+            }
+        </style>
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52);padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);margin-top: 30px; text-align: left;">
+            <h3 style="color: #333; font-family: 'Helvetica', sans-serif;">🌟 Team Members:</h3>
+            <ul class="team-member-list" style="list-style: none; padding: 0;">
+                <li><Strong>Ernesto Gomila</Strong></li>
+                <li><Strong>Brandon Rodriguez</Strong></li>
+                <li><Strong>Alfredo Cal</Strong></li>
+                <li><Strong>Abel</Strong></li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Footer
+    st.markdown("""
+        <div style="margin-top: 40px; text-align: center; color: #aaa; font-size: 14px;">
+        Made with 🧠 by the NBA Predictor Team | Powered by Streamlit
+         </div>
+    """, unsafe_allow_html=True)
+
+    # Apply background color for the entire app
+    st.markdown("""
+        <style>
+            body {
+                background-color: #f4f4f4; /* Light off-white background for readability */
+            }
+            .main-content {
+                padding: 20px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+elif st.session_state.page == "Prediction":
+    st.markdown("Prediction page content goes here")
+
+
 
 elif st.session_state.page == "Prediction":
     st.title("Make a Prediction")
