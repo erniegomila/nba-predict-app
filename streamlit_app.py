@@ -249,9 +249,6 @@ def predict_game(team_abbreviation_home, team_abbreviation_away, game_date):
     st.bar_chart(wins_losses_data.set_index('Feature'))
 
 
-
-
-
 # Sidebar navigation
 st.sidebar.title("Menu") 
 home_button = st.sidebar.button("Home")
@@ -277,13 +274,11 @@ elif about_button:
 # Render the selected page
 if st.session_state.page == "Home":
 
-
-
     # Title with emoji for a vibrant look
     st.markdown("""
         <div style="background: linear-gradient(to right, #ff7c7c, #ffae52); padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);">
             <h1 style="color: white; font-family: 'Arial', sans-serif; margin-bottom: 0;">🏀 NBA Predictor App</h1>
-            <strong style="font-size: 20px; color: white; margin-top: 5px;">Elevate your predictions, powered by data science!</strong>
+            <strong style="font-size: 20px; color: white; margin-top: 5px;">Elevate your gaming bets with our predictions, powered by data science!</strong>
         </div>
     """, unsafe_allow_html=True)
 
@@ -304,7 +299,7 @@ if st.session_state.page == "Home":
             <Strong style="font-size: 16px; color: #444; line-height: 1.6;">
                 <b>CAP 5768</b><br>
                 <b>Instructor:</b> Dr. Juhàsz<br>
-                <b>Schedule:</b> Mondays, 5:00 PM - 7:40 PM
+                <b>Schedule: Monday 5:00 PM - 7:40 PM</b> 
             </Strong>
         </div>
     """, unsafe_allow_html=True)
@@ -371,4 +366,3 @@ elif st.session_state.page == "Data Insights":
 elif st.session_state.page == "About":
     st.title("About")
     st.write("This app predicts NBA game outcomes.")
-
