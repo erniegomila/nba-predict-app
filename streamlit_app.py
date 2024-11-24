@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
@@ -359,10 +360,182 @@ elif st.session_state.page == "Prediction":
     if submit:
         predict_game(team_abbreviation_home, team_abbreviation_away, game_date)
 
-elif st.session_state.page == "Data Insights":
-    st.title("Data Insights")
-    st.write(game_data.head())
+
+# Cache data loading function
+@st.cache_data
+def load_data():
+    line_score = pd.read_csv('line_score.csv')
+    common_player_info = pd.read_csv('common_player_info.csv')
+    draft_history = pd.read_csv('draft_history.csv')
+    return line_score, common_player_info, draft_history
+
+
+# Main app logic
+if st.session_state.page == "Data Insights":
+    st.title("Data Insights and Analysis")
+
+    # Load data
+    line_score, common_player_info, draft_history = load_data()
+
+    # Preview datasets
+    st.header("Dataset Previews")
+    st.subheader("Line Score")
+    st.dataframe(line_score.head())
+    st.subheader("Common Player Info")
+    st.dataframe(common_player_info.head())
+    st.subheader("Draft History")
+    st.dataframe(draft_history.head())
+
+    # Standardize column names
+    line_score.columns = line_score.columns.str.lower()
+    common_player_info.columns = common_player_info.columns.str.lower()
+    draft_history.columns = draft_history.columns.str.lower()
+
+    # Analysis 1: Total Points Scored Per Team
+    st.header("Analysis 1: Total Points Scored Per Team")
+    if 'team_nickname_home' in line_score.columns and 'pts_home' in line_score.columns and \
+            'team_nickname_away' in line_score.columns and 'pts_away' in line_score.columns:
+        total_points_home = line_score.groupby('team_nickname_home')['pts_home'].sum().reset_index()
+        total_points_home.columns = ['team', 'total_points']
+        total_points_away = line_score.groupby('team_nickname_away')['pts_away'].sum().reset_index()
+        total_points_away.columns = ['team', 'total_points']
+        total_points = pd.concat([total_points_home, total_points_away]).groupby('team').sum().reset_index()
+
+        fig = px.bar(
+            total_points,
+            x='team',
+            y='total_points',
+            title='Total Points Scored Per Team',
+            labels={'total_points': 'Total Points'},
+            color='total_points',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Relevant columns for total points analysis are missing in the dataset.")
+
+    # Analysis 2: Top Teams by Wins
+    st.header("Analysis 2: Top Teams by Wins")
+    if 'team_wins_losses_home' in line_score.columns and 'team_nickname_home' in line_score.columns and \
+            'team_wins_losses_away' in line_score.columns:
+        # Clean and convert win/loss data
+        line_score['wins_home'] = (
+            line_score['team_wins_losses_home']
+            .str.split('-')
+            .str[0]
+            .apply(lambda x: int(x) if x.isdigit() else None)
+        )
+        line_score['wins_away'] = (
+            line_score['team_wins_losses_away']
+            .str.split('-')
+            .str[0]
+            .apply(lambda x: int(x) if x.isdigit() else None)
+        )
+
+        # Aggregate wins
+        total_wins = (
+            line_score.groupby('team_nickname_home')['wins_home']
+            .sum()
+            .reset_index()
+            .rename(columns={'team_nickname_home': 'team', 'wins_home': 'total_wins'})
+        )
+        fig = px.bar(
+            total_wins,
+            x='team',
+            y='total_wins',
+            title="Top Teams by Total Wins",
+            labels={'total_wins': 'Wins'},
+            color='total_wins',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Relevant columns to analyze wins are missing.")
+
+    # Additional Insights
+    st.header("Additional Insights")
+
+    # Insight 3: Top 10 Players of All Time
+    st.header("Insight 3: Top 10 Players of All Time")
+    if 'player_id' in line_score.columns and 'pts_home' in line_score.columns and 'player_id' in common_player_info.columns:
+        merged_data = line_score.merge(common_player_info, on='player_id', how='inner')
+
+        top_players = (
+            merged_data.groupby('player_name')['pts_home']
+            .sum()
+            .reset_index()
+            .sort_values(by='pts_home', ascending=False)
+            .head(10)
+        )
+
+        fig = px.bar(
+            top_players,
+            x='player_name',
+            y='pts_home',
+            title="Top 10 Players of All Time by Total Points",
+            labels={'pts_home': 'Total Points'},
+            color='pts_home',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Columns required for Insight 3 are missing. Ensure `player_id` and `pts_home` are present.")
+
+    # Insight 4: Most Consistent Players
+    st.header("Insight 4: Top 10 Most Consistent Players (Avg. Points/Game)")
+    if 'player_id' in line_score.columns and 'game_id' in line_score.columns and 'pts_home' in line_score.columns:
+        merged_data = line_score.merge(common_player_info, on='player_id', how='inner')
+
+        player_stats = (
+            merged_data.groupby(['player_name', 'player_id'])
+            .agg(total_points=('pts_home', 'sum'), total_games=('game_id', 'count'))
+            .reset_index()
+        )
+        player_stats['avg_points_per_game'] = player_stats['total_points'] / player_stats['total_games']
+
+        top_consistent_players = player_stats.sort_values(by='avg_points_per_game', ascending=False).head(10)
+
+        fig = px.scatter(
+            top_consistent_players,
+            x='player_name',
+            y='avg_points_per_game',
+            size='total_points',
+            title="Top 10 Most Consistent Players (Avg. Points/Game)",
+            labels={'avg_points_per_game': 'Average Points/Game'},
+            color='avg_points_per_game',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Columns required for Insight 4 are missing. Ensure `game_id` and `pts_home` are present.")
+
+    # Insight 5: Top Teams in the Last Decade
+    st.header("Insight 5: Top Teams in the Last Decade")
+    if 'team_nickname_home' in line_score.columns and 'game_date' in line_score.columns and 'team_wins_losses_home' in line_score.columns:
+        line_score['game_date'] = pd.to_datetime(line_score['game_date'], errors='coerce')
+        recent_games = line_score[line_score['game_date'] >= pd.Timestamp.now() - pd.DateOffset(years=10)]
+
+        recent_games['wins_home'] = (
+            recent_games['team_wins_losses_home']
+            .str.split('-')
+            .str[0]
+            .apply(lambda x: int(x) if x.isdigit() else None)
+        )
+        total_wins_recent = (
+            recent_games.groupby('team_nickname_home')['wins_home']
+            .sum()
+            .reset_index()
+            .rename(columns={'team_nickname_home': 'team', 'wins_home': 'total_wins'})
+        )
+
+        fig = px.bar(
+            total_wins_recent.head(10),
+            x='team',
+            y='total_wins',
+            title="Top Teams in the Last Decade",
+            labels={'total_wins': 'Total Wins'},
+            color='total_wins',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Columns required for Insight 5 are missing. Ensure `game_date` and `team_wins_losses_home` are present.")
 
 elif st.session_state.page == "About":
     st.title("About")
-    st.write("This app predicts NBA game outcomes.")
+    st.write("This app predicts NBA game outcomes.")    
