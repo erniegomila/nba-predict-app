@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
@@ -175,7 +176,7 @@ def predict_game(team_abbreviation_home, team_abbreviation_away, game_date):
     away_home_wins = len(season_games[season_games['team_id_home'] == away_team_id])
     away_home_losses = len(season_games[season_games['team_id_away'] == away_team_id])
 
-   
+
     input_data = pd.DataFrame([{
         'home_total_points': home_total_points,
         'home_total_points_against': home_total_points_against,
@@ -187,7 +188,7 @@ def predict_game(team_abbreviation_home, team_abbreviation_away, game_date):
         'away_home_losses': away_home_losses,
     }])
 
-   
+
     for feature in features:
         if feature not in input_data.columns:
             input_data[feature] = 0  
@@ -196,11 +197,11 @@ def predict_game(team_abbreviation_home, team_abbreviation_away, game_date):
     prediction = model.predict(input_data)[0]
     probabilities = model.predict_proba(input_data)[0]  # Get probabilities for both classes
 
-    
+
     result = f"{team_abbreviation_home} Wins" if prediction == 1 else f"{team_abbreviation_away} Wins"
     winning_team_probability = probabilities[1] if prediction == 1 else probabilities[0]
 
-    
+
     st.markdown(
         f"""
         <div style="text-align: left; font-size: 30px; color: white; font-weight: bold;">
@@ -249,9 +250,6 @@ def predict_game(team_abbreviation_home, team_abbreviation_away, game_date):
     st.bar_chart(wins_losses_data.set_index('Feature'))
 
 
-
-
-
 # Sidebar navigation
 st.sidebar.title("Menu") 
 home_button = st.sidebar.button("Home")
@@ -276,21 +274,80 @@ elif about_button:
 
 # Render the selected page
 if st.session_state.page == "Home":
-    st.title("NBA Predictor App")
-    st.write("Welcome to the NBA Predictor App.")
-    st.subheader("Intro to Data Science Final Project")
+
+    # Title with emoji for a vibrant look
     st.markdown("""
-**CAP 5768**<br>
-Dr. Juhàsz<br>
-Mon 5pm - 7:40pm
-""", unsafe_allow_html=True)
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52); padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);">
+            <h1 style="color: white; font-family: 'Arial', sans-serif; margin-bottom: 0;">🏀 NBA Predictor App</h1>
+            <strong style="font-size: 20px; color: white; margin-top: 5px;">Elevate your gaming bets with our predictions, powered by data science!</strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Welcome message with improved layout
     st.markdown("""
-**Team Members:**<br>
-Ernesto Gomila<br>
-Brandon Rodriguez<br>
-Alfredo<br>
-Abel<br>
-""", unsafe_allow_html=True)
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52); padding: 15px; border-radius: 15px; text-align: center; margin-top: 20px; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: white; font-family: 'Verdana', sans-serif;">Welcome to the NBA Predictor App</h2>
+            <strong style="font-size: 18px; color: white; font-family: 'Georgia', serif;">
+                Your ultimate tool for predicting NBA outcomes, powered by data science!
+            </strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Subtitle with better spacing
+    st.markdown("""
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52);padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);margin-top: 30px; text-align: left;">
+            <h3 style="color: #333; font-family: 'Helvetica', sans-serif;">📚 Intro to Data Science Final Project</h3>
+            <Strong style="font-size: 16px; color: #444; line-height: 1.6;">
+                <b>CAP 5768</b><br>
+                <b>Instructor:</b> Dr. Juhàsz<br>
+                <b>Schedule: Monday 5:00 PM - 7:40 PM</b> 
+            </Strong>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Team members with hover effect using CSS
+    st.markdown("""
+        <style>
+            .team-member-list li {
+                margin-bottom: 8px;
+                font-size: 16px;
+                color: #444;
+                transition: color 0.3s ease;
+            }
+            .team-member-list li:hover {
+                color: #0077b6;
+            }
+        </style>
+        <div style="background: linear-gradient(to right, #ff7c7c, #ffae52);padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #ddd; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);margin-top: 30px; text-align: left;">
+            <h3 style="color: #333; font-family: 'Helvetica', sans-serif;">🌟 Team Members:</h3>
+            <ul class="team-member-list" style="list-style: none; padding: 0;">
+                <li><Strong>Ernesto Gomila</Strong></li>
+                <li><Strong>Brandon Rodriguez</Strong></li>
+                <li><Strong>Alfredo Cal</Strong></li>
+                <li><Strong>Abel</Strong></li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Footer
+    st.markdown("""
+        <div style="margin-top: 40px; text-align: center; color: #aaa; font-size: 14px;">
+        Made with 🧠 by the NBA Predictor Team | Powered by Streamlit
+         </div>
+    """, unsafe_allow_html=True)
+
+    # Apply background color for the entire app
+    st.markdown("""
+        <style>
+            body {
+                background-color: #f4f4f4; /* Light off-white background for readability */
+            }
+            .main-content {
+                padding: 20px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
 
 elif st.session_state.page == "Prediction":
     st.title("Make a Prediction")
@@ -303,10 +360,202 @@ elif st.session_state.page == "Prediction":
     if submit:
         predict_game(team_abbreviation_home, team_abbreviation_away, game_date)
 
-elif st.session_state.page == "Data Insights":
-    st.title("Data Insights")
-    st.write(game_data.head())
+# Main app logic
+if st.session_state.page == "Data Insights":
 
-elif st.session_state.page == "About":
-    st.title("About")
-    st.write("This app predicts NBA game outcomes.")    
+    # Load data
+    def load_data():
+        # Your data loading function (placeholder for actual data loading logic)
+        line_score = pd.read_csv('line_score.csv')  # Update with actual data path
+        common_player_info = pd.read_csv('common_player_info.csv')  # Update with actual data path
+        draft_history = pd.read_csv('draft_history.csv')  # Update with actual data path
+        return line_score, common_player_info, draft_history
+
+    # Initialize Streamlit app
+    st.title("Data Insights and Analysis")
+
+    # Load data
+    line_score, common_player_info, draft_history = load_data()
+
+    # Preview datasets
+    st.header("Dataset Previews")
+    st.subheader("Line Score")
+    st.dataframe(line_score.head())
+    st.subheader("Common Player Info")
+    st.dataframe(common_player_info.head())
+    st.subheader("Draft History")
+    st.dataframe(draft_history.head())
+
+    # Standardize column names
+    line_score.columns = line_score.columns.str.lower()
+    common_player_info.columns = common_player_info.columns.str.lower()
+    draft_history.columns = draft_history.columns.str.lower()
+
+    # Analysis 1: Total Points Scored Per Team
+    st.header("Analysis 1: Total Points Scored Per Team")
+    if 'team_nickname_home' in line_score.columns and 'pts_home' in line_score.columns and \
+            'team_nickname_away' in line_score.columns and 'pts_away' in line_score.columns:
+        total_points_home = line_score.groupby('team_nickname_home')['pts_home'].sum().reset_index()
+        total_points_home.columns = ['team', 'total_points']
+        total_points_away = line_score.groupby('team_nickname_away')['pts_away'].sum().reset_index()
+        total_points_away.columns = ['team', 'total_points']
+        total_points = pd.concat([total_points_home, total_points_away]).groupby('team').sum().reset_index()
+
+        # Create a bar chart to display the total points
+        fig = px.bar(
+            total_points,
+            x='team',
+            y='total_points',
+            title='Total Points Scored Per Team',
+            labels={'total_points': 'Total Points'},
+            color='total_points',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Relevant columns for total points analysis are missing in the dataset.")
+
+    # Insight 2: Top Scoring Games of All Time (Pie Chart)
+    st.header("Insight 2: Top Scoring Games of All Time")
+    try:
+        # Check if required columns are present
+        if {'game_id', 'pts_home', 'pts_away'}.issubset(line_score.columns):
+            # Calculate total points for each game
+            line_score['total_points'] = line_score['pts_home'] + line_score['pts_away']
+
+            # Get the top 10 highest-scoring games
+            top_games = line_score.nlargest(10, 'total_points')
+
+            # Create a pie chart to display the distribution of total points
+            fig = px.pie(
+                top_games,
+                names='game_id',
+                values='total_points',
+                title="Top Scoring Games of All Time",
+                labels={'game_id': 'Game ID', 'total_points': 'Total Points'},
+                hover_data={'total_points': True},
+                color_discrete_sequence=px.colors.sequential.RdBu,
+            )
+
+            # Improve hover information
+            fig.update_traces(hovertemplate="Game ID: %{label}<br>Total Points: %{value}")
+
+            # Display the chart
+            st.plotly_chart(fig)
+        else:
+            # Error if required columns are missing
+            st.error("Columns required for Insight 2 are missing. Ensure `game_id`, `pts_home`, and `pts_away` are present.")
+    except Exception as e:
+        # Catch and display any errors
+        st.error(f"An error occurred while processing Insight 2: {e}")
+
+    # Analysis 3: Top Teams by Wins
+    st.header("Analysis 3: Top Teams by Wins")
+    if 'team_wins_losses_home' in line_score.columns and 'team_nickname_home' in line_score.columns and \
+            'team_wins_losses_away' in line_score.columns:
+
+        # Clean and convert win/loss data
+        line_score['wins_home'] = (
+            line_score['team_wins_losses_home']
+            .str.split('-')
+            .str[0]
+            .apply(lambda x: int(x) if x.isdigit() else None)
+        )
+        line_score['wins_away'] = (
+            line_score['team_wins_losses_away']
+            .str.split('-')
+            .str[0]
+            .apply(lambda x: int(x) if x.isdigit() else None)
+        )
+
+        # Aggregate wins
+        total_wins = (
+            line_score.groupby('team_nickname_home')['wins_home']
+            .sum()
+            .reset_index()
+            .rename(columns={'team_nickname_home': 'team', 'wins_home': 'total_wins'})
+        )
+
+        # Create a bar chart to display total wins
+        fig = px.bar(
+            total_wins,
+            x='team',
+            y='total_wins',
+            title="Top Teams by Total Wins",
+            labels={'total_wins': 'Wins'},
+            color='total_wins',
+        )
+        st.plotly_chart(fig)
+    else:
+        st.error("Relevant columns to analyze wins are missing.")
+
+    # Insight 4: Average Points per Game by Team
+    st.header("Insight 4: Average Points per Game by Team")
+    try:
+        required_columns_insight2 = {'team_nickname_home', 'pts_home', 'game_id'}
+        missing_columns_insight2 = required_columns_insight2 - set(line_score.columns)
+        if not missing_columns_insight2:
+            team_stats = (
+                line_score.groupby('team_nickname_home')
+                .agg(total_points=('pts_home', 'sum'), total_games=('game_id', 'nunique'))
+                .reset_index()
+            )
+            team_stats['avg_points_per_game'] = team_stats['total_points'] / team_stats['total_games']
+
+            # Create a bar chart for average points per game
+            fig = px.bar(
+                team_stats.sort_values(by='avg_points_per_game', ascending=False),
+                x='team_nickname_home',
+                y='avg_points_per_game',
+                title="Average Points per Game by Team",
+                labels={'team_nickname_home': 'Team', 'avg_points_per_game': 'Avg Points/Game'},
+                color='avg_points_per_game',
+            )
+            st.plotly_chart(fig)
+        else:
+            st.error(f"Columns required for Insight 3 are missing: {missing_columns_insight2}")
+    except Exception as e:
+        st.error(f"An error occurred while processing Insight 3: {e}")
+
+    # Insight 5: Win/Loss Analysis by Team
+    st.header("Insight 5: Win/Loss Analysis by Team")
+    try:
+        if {'team_nickname_home', 'team_wins_losses_home'}.issubset(line_score.columns):
+            win_loss_data = line_score[['team_nickname_home', 'team_wins_losses_home']].copy()
+
+            # Split the win/loss column and handle conversion properly
+            win_loss_data[['wins', 'losses']] = win_loss_data['team_wins_losses_home'].str.split('-', expand=True)
+
+            # Convert to numeric, coercing errors to NaN
+            win_loss_data['wins'] = pd.to_numeric(win_loss_data['wins'], errors='coerce')
+            win_loss_data['losses'] = pd.to_numeric(win_loss_data['losses'], errors='coerce')
+
+            # Drop rows with NaN values
+            win_loss_data = win_loss_data.dropna(subset=['wins', 'losses'])
+
+            # Calculate win/loss ratio
+            win_loss_data['win_loss_ratio'] = win_loss_data['wins'] / (win_loss_data['wins'] + win_loss_data['losses'])
+            avg_ratios = win_loss_data.groupby('team_nickname_home')['win_loss_ratio'].mean().reset_index()
+
+            # Drop rows with NaN values in win/loss ratio
+            avg_ratios = avg_ratios.dropna(subset=['win_loss_ratio'])
+
+            # Create a scatter plot for Win/Loss Ratio by Team
+            fig = px.scatter(
+                avg_ratios,
+                x='team_nickname_home',
+                y='win_loss_ratio',
+                size='win_loss_ratio',
+                title="Win/Loss Ratio by Team",
+                labels={'team_nickname_home': 'Team', 'win_loss_ratio': 'Win/Loss Ratio'},
+                color='win_loss_ratio',
+            )
+            st.plotly_chart(fig)
+        else:
+            st.error("Columns required for Insight 5 are missing. Ensure `team_nickname_home` and `team_wins_losses_home` are present.")
+    except Exception as e:
+        st.error(f"An error occurred while processing Insight 5: {e}")
+
+#About tab
+elif st.session_state.page == "About": 
+    st.title("About") 
+    st.write("This app predicts NBA game outcomes.")
