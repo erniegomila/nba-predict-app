@@ -309,5 +309,4 @@ elif st.session_state.page == "Data Insights":
 
 elif st.session_state.page == "About":
     st.title("About")
-    st.write("This app predicts NBA game outcomes.")
-
+    st.write("This app predicts NBA game outcomes.")    
